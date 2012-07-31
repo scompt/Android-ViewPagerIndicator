@@ -680,13 +680,13 @@ public class TitlePageIndicator extends View implements PageIndicator {
 
         Drawable drawable = getContext().getResources().getDrawable(iconId);
 
-        float height = getHeight() - mTopPadding;
+        float height = getHeight() - mTopPadding - mFooterPadding;
         float scaleFactor = height / drawable.getIntrinsicHeight();
 
         Rect bounds = new Rect();
         bounds.right = (int) (drawable.getIntrinsicWidth() * scaleFactor);
         bounds.top = (int) mTopPadding;
-        bounds.bottom = (int) (getHeight());
+        bounds.bottom = (int) (getHeight() - mFooterPadding);
         drawable.setBounds(bounds);
         return drawable;
     }
