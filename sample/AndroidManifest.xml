@@ -187,8 +187,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SampleTitlesWithListener"
-            android:label="Titles/With Listener">
+                android:name=".SampleTitlesWithListener"
+                android:label="Titles/With Listener">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.jakewharton.android.viewpagerindicator.sample.SAMPLE" />
+            </intent-filter>
+        </activity>
+        <activity
+                android:name=".SampleTitlesWithIcons"
+                android:label="Titles/With Icons">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.jakewharton.android.viewpagerindicator.sample.SAMPLE" />
