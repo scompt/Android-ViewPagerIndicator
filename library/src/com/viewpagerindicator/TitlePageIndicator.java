@@ -26,6 +26,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.view.MotionEventCompat;
@@ -124,6 +125,7 @@ public class TitlePageIndicator extends View implements PageIndicator {
     private float mLastMotionX = -1;
     private int mActivePointerId = INVALID_POINTER;
     private boolean mIsDragging;
+    private boolean mWithIcons;
 
     private OnCenterItemClickListener mCenterItemClickListener;
 
@@ -420,6 +422,8 @@ public class TitlePageIndicator extends View implements PageIndicator {
             if ((bound.left > left && bound.left < right) || (bound.right > left && bound.right < right)) {
                 final boolean currentPage = (i == page);
                 final CharSequence pageTitle = getTitle(i);
+                final Drawable pageIcon = getIcon(i);
+                Rect iconBounds = pageIcon.getBounds();
 
                 //Only set bold if we are within bounds
                 mPaintText.setFakeBoldText(currentPage && currentBold && mBoldText);
@@ -430,13 +434,26 @@ public class TitlePageIndicator extends View implements PageIndicator {
                     //Fade out/in unselected text as the selected text fades in/out
                     mPaintText.setAlpha(colorTextAlpha - (int)(colorTextAlpha * selectedPercent));
                 }
-                canvas.drawText(pageTitle, 0, pageTitle.length(), bound.left, bound.bottom + mTopPadding, mPaintText);
+
+                int iconOffset = 0;
+                if (pageIcon != null) {
+                    pageIcon.setAlpha(mPaintText.getAlpha());
+                    iconBounds.offset(bound.left, 0);
+                    pageIcon.draw(canvas);
+                    iconOffset = iconBounds.width();
+                }
+                canvas.drawText(pageTitle, 0, pageTitle.length(), bound.left + iconOffset, bound.bottom + mTopPadding, mPaintText);
 
                 //If we are within the selected bounds draw the selected text
                 if (currentPage && currentSelected) {
                     mPaintText.setColor(mColorSelected);
                     mPaintText.setAlpha((int)((mColorSelected >>> 24) * selectedPercent));
-                    canvas.drawText(pageTitle, 0, pageTitle.length(), bound.left, bound.bottom + mTopPadding, mPaintText);
+                    if (pageIcon != null) {
+                        pageIcon.setAlpha(mPaintText.getAlpha());
+                        iconBounds.offset(bound.left, 0);
+                        pageIcon.draw(canvas);
+                    }
+                    canvas.drawText(pageTitle, 0, pageTitle.length(), bound.left + iconOffset, bound.bottom + mTopPadding, mPaintText);
                 }
             }
         }
@@ -636,7 +653,42 @@ public class TitlePageIndicator extends View implements PageIndicator {
         CharSequence title = getTitle(index);
         bounds.right = (int) paint.measureText(title, 0, title.length());
         bounds.bottom = (int) (paint.descent() - paint.ascent());
+
+        Drawable icon = getIcon(index);
+        if (icon != null) {
+            Rect iconBounds = icon.getBounds();
+            bounds.right += iconBounds.width();
+        }
+
         return bounds;
+    }
+
+    /**
+     * Fetches the icon at index if it exists
+     * @param index
+     * @return
+     */
+    private Drawable getIcon(int index) {
+        if(!mWithIcons) {
+            return null;
+        }
+
+        int iconId = ((IconProvider) mPagerAdapter).getIcon(index);
+        if (iconId == IconProvider.NO_ICON) {
+            return null;
+        }
+
+        Drawable drawable = getContext().getResources().getDrawable(iconId);
+
+        float height = getHeight() - mTopPadding;
+        float scaleFactor = height / drawable.getIntrinsicHeight();
+
+        Rect bounds = new Rect();
+        bounds.right = (int) (drawable.getIntrinsicWidth() * scaleFactor);
+        bounds.top = (int) mTopPadding;
+        bounds.bottom = (int) (getHeight());
+        drawable.setBounds(bounds);
+        return drawable;
     }
 
     @Override
@@ -653,6 +705,7 @@ public class TitlePageIndicator extends View implements PageIndicator {
         }
         mViewPager = view;
         mViewPager.setOnPageChangeListener(this);
+        mWithIcons = (mPagerAdapter instanceof IconProvider);
         invalidate();
     }
 
