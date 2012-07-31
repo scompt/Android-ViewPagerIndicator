@@ -433,7 +433,6 @@ public class TitlePageIndicator extends View implements PageIndicator {
                 final boolean currentPage = (i == page);
                 final CharSequence pageTitle = getTitle(i);
                 final Drawable pageIcon = getIcon(i);
-                Rect iconBounds = pageIcon.getBounds();
 
                 //Only set bold if we are within bounds
                 mPaintText.setFakeBoldText(currentPage && currentBold && mBoldText);
@@ -455,8 +454,10 @@ public class TitlePageIndicator extends View implements PageIndicator {
                         bound.right = bound.left + w;
                     }
                 }
+                Rect iconBounds = null;
                 int iconOffset = 0;
                 if (pageIcon != null) {
+                    iconBounds = pageIcon.getBounds();
                     pageIcon.setAlpha(mPaintText.getAlpha());
                     iconBounds.offset(bound.left, 0);
                     pageIcon.draw(canvas);
