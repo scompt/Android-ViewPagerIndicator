@@ -101,6 +101,8 @@
         <attr name="topPadding" format="dimension" />
         <!-- Strength of the fading edge effect. Must be a value between 0.0 and 1.0. -->
         <attr name="fadingEdgeStrength" format="float" />
+        <!-- Padding between icon and the title. -->
+        <attr name="iconPadding" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="UnderlinePageIndicator">
