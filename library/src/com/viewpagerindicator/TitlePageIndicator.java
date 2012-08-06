@@ -454,10 +454,9 @@ public class TitlePageIndicator extends View implements PageIndicator {
                         bound.right = bound.left + w;
                     }
                 }
-                Rect iconBounds = null;
                 int iconOffset = 0;
                 if (pageIcon != null) {
-                    iconBounds = pageIcon.getBounds();
+                    Rect iconBounds = pageIcon.getBounds();
                     pageIcon.setAlpha(mPaintText.getAlpha());
                     iconBounds.offset(bound.left, 0);
                     pageIcon.draw(canvas);
@@ -471,7 +470,6 @@ public class TitlePageIndicator extends View implements PageIndicator {
                     mPaintText.setAlpha((int)((mColorSelected >>> 24) * selectedPercent));
                     if (pageIcon != null) {
                         pageIcon.setAlpha(mPaintText.getAlpha());
-                        iconBounds.offset(bound.left, 0);
                         pageIcon.draw(canvas);
                     }
                     canvas.drawText(pageTitle, 0, pageTitle.length(), bound.left + iconOffset, bound.bottom + mTopPadding, mPaintText);
