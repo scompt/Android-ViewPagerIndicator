@@ -99,6 +99,8 @@
         <attr name="titlePadding" format="dimension" />
         <!-- Padding between titles and the top of the View. -->
         <attr name="topPadding" format="dimension" />
+        <!-- Padding between icon and the title. -->
+        <attr name="iconPadding" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="UnderlinePageIndicator">

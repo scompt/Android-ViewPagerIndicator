@@ -115,6 +115,7 @@ public class TitlePageIndicator extends View implements PageIndicator {
     private float mFooterPadding;
     private float mTitlePadding;
     private float mTopPadding;
+    private float mIconPadding;
     /** Left and right side padding for not active view titles. */
     private float mClipPadding;
     private float mFooterLineHeight;
@@ -157,6 +158,7 @@ public class TitlePageIndicator extends View implements PageIndicator {
         final float defaultTitlePadding = res.getDimension(R.dimen.default_title_indicator_title_padding);
         final float defaultClipPadding = res.getDimension(R.dimen.default_title_indicator_clip_padding);
         final float defaultTopPadding = res.getDimension(R.dimen.default_title_indicator_top_padding);
+        final float defaultIconPadding = res.getDimension(R.dimen.default_title_indicator_icon_padding);
 
         //Retrieve styles attributes
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TitlePageIndicator, defStyle, 0);
@@ -168,6 +170,7 @@ public class TitlePageIndicator extends View implements PageIndicator {
         mFooterIndicatorUnderlinePadding = a.getDimension(R.styleable.TitlePageIndicator_footerIndicatorUnderlinePadding, defaultFooterIndicatorUnderlinePadding);
         mFooterPadding = a.getDimension(R.styleable.TitlePageIndicator_footerPadding, defaultFooterPadding);
         mTopPadding = a.getDimension(R.styleable.TitlePageIndicator_topPadding, defaultTopPadding);
+        mIconPadding = a.getDimension(R.styleable.TitlePageIndicator_iconPadding, defaultIconPadding);
         mTitlePadding = a.getDimension(R.styleable.TitlePageIndicator_titlePadding, defaultTitlePadding);
         mClipPadding = a.getDimension(R.styleable.TitlePageIndicator_clipPadding, defaultClipPadding);
         mColorSelected = a.getColor(R.styleable.TitlePageIndicator_selectedColor, defaultSelectedColor);
@@ -290,6 +293,15 @@ public class TitlePageIndicator extends View implements PageIndicator {
 
     public void setTopPadding(float topPadding) {
         mTopPadding = topPadding;
+        invalidate();
+    }
+
+    public float getIconPadding() {
+        return this.mIconPadding;
+    }
+
+    public void setIconPadding(float iconPadding) {
+        mIconPadding = iconPadding;
         invalidate();
     }
 
@@ -434,13 +446,13 @@ public class TitlePageIndicator extends View implements PageIndicator {
                     mPaintText.setAlpha(colorTextAlpha - (int)(colorTextAlpha * selectedPercent));
                 }
 
-                int iconOffset = 0;
+                float iconOffset = 0;
                 if (pageIcon != null) {
                     Rect iconBounds = pageIcon.getBounds();
                     pageIcon.setAlpha(mPaintText.getAlpha());
                     iconBounds.offset(bound.left, 0);
                     pageIcon.draw(canvas);
-                    iconOffset = iconBounds.width();
+                    iconOffset = iconBounds.width() + mIconPadding;
                 }
                 canvas.drawText(pageTitle, 0, pageTitle.length(), bound.left + iconOffset, bound.bottom + mTopPadding, mPaintText);
 
@@ -656,7 +668,7 @@ public class TitlePageIndicator extends View implements PageIndicator {
         Drawable icon = getIcon(index);
         if (icon != null) {
             Rect iconBounds = icon.getBounds();
-            bounds.right += iconBounds.width();
+            bounds.right += iconBounds.width() + mIconPadding;
         }
 
         return bounds;
